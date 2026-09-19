@@ -15,7 +15,7 @@ const navItems: NavItem[] = [
 
 const bottomItems: NavItem[] = [
   { label: 'Settings', href: '/security/settings', iconName: 'Settings' },
-  { label: 'Help', href: '/help', iconName: 'HelpCircle' },
+  { label: 'Help', href: '/security/help', iconName: 'HelpCircle' },
 ];
 
 const PAGE_TITLES: Record<string, string> = {
@@ -24,6 +24,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/security/deliveries': 'Delivery Management',
   '/security/emergency': 'Emergency Alerts',
   '/security/settings': 'Terminal Settings',
+  '/security/help': 'Security Help & Support',
 };
 
 interface SecurityLayoutClientProps {

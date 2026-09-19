@@ -19,7 +19,7 @@ const navItems: NavItem[] = [
 
 const bottomItems: NavItem[] = [
   { label: 'Settings', href: '/admin/settings', iconName: 'Settings' },
-  { label: 'Help', href: '/help', iconName: 'HelpCircle' },
+  { label: 'Help', href: '/admin/help', iconName: 'HelpCircle' },
 ];
 
 const PAGE_TITLES: Record<string, string> = {
@@ -32,6 +32,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/admin/notices': 'Notice Board',
   '/admin/analytics': 'Analytics & Reports',
   '/admin/settings': 'Society Settings',
+  '/admin/help': 'Help & Support',
 };
 
 interface AdminLayoutClientProps {

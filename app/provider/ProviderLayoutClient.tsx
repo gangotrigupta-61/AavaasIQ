@@ -15,7 +15,7 @@ const navItems: NavItem[] = [
 
 const bottomItems: NavItem[] = [
   { label: 'Settings', href: '/provider/settings', iconName: 'Settings' },
-  { label: 'Help', href: '/help', iconName: 'HelpCircle' },
+  { label: 'Help', href: '/provider/help', iconName: 'HelpCircle' },
 ];
 
 const PAGE_TITLES: Record<string, string> = {
@@ -24,6 +24,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/provider/bookings': 'My Bookings',
   '/provider/earnings': 'Earnings',
   '/provider/settings': 'Provider Settings',
+  '/provider/help': 'Partner Help & Support',
 };
 
 interface ProviderLayoutClientProps {

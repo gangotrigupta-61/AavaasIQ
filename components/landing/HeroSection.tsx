@@ -34,7 +34,7 @@ export default function HeroSection() {
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           backgroundPosition: "top center",
-          opacity: 0.12,
+          opacity: 0.36
         }}
       />
 
