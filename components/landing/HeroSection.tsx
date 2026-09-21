@@ -21,7 +21,7 @@ export default function HeroSection() {
         aria-hidden="true"
         style={{
           background:
-            "linear-gradient(to right, var(--hero-overlay-start) 42%, var(--hero-overlay-mid) 58%, var(--hero-overlay-soft) 78%, transparent 100%)",
+            "linear-gradient(to right, var(--hero-overlay-start) 30%, var(--hero-overlay-mid) 40%, var(--hero-overlay-soft) 60%, transparent 100%)",
         }}
       />
 
