@@ -3,21 +3,22 @@ import { Building2 } from 'lucide-react';
 
 const footerLinks = {
   Product: [
-    { label: 'Features', href: '/#features' },
-    { label: 'Services', href: '/#services' },
-    { label: 'Pricing', href: '/#pricing' },
-    { label: 'Updates', href: '/#updates' },
+    { label: 'Features', href: '/features' },
+    { label: 'How It Works', href: '/how-it-works' },
+    { label: 'Roles', href: '/roles' },
+    { label: 'Services', href: '/services' },
   ],
   Company: [
-    { label: 'About', href: '/#about' },
-    { label: 'Careers', href: '/#about' },
-    { label: 'Blog', href: '/#about' },
-    { label: 'Contact', href: '/#contact' },
+    { label: 'About Us', href: '/about' },
+    { label: 'Contact', href: '/contact' },
+    { label: 'Platform Tour', href: '/how-it-works' },
+    { label: 'Security & Safety', href: '/about' },
   ],
-  Legal: [
-    { label: 'Privacy Policy', href: '#privacy' },
-    { label: 'Terms of Service', href: '#terms' },
-    { label: 'Cookie Policy', href: '#cookies' },
+  Portals: [
+    { label: 'Resident Portal', href: '/login' },
+    { label: 'Management Admin', href: '/login' },
+    { label: 'Security Desk', href: '/login' },
+    { label: 'Service Provider', href: '/login' },
   ],
 };
 

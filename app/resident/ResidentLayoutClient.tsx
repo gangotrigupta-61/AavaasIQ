@@ -72,6 +72,7 @@ export default function ResidentLayoutClient({ user, children }: ResidentLayoutC
           onMenuToggle={() => setMobileOpen(true)}
           userName={userName}
           userSubtitle={userSubtitle}
+          homeHref="/resident/dashboard"
         />
         <main className="flex-1 p-4 sm:p-6">{children}</main>
       </div>

@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Wrench, Save, Sun, Moon, Laptop, UserCheck, Loader2 } from 'lucide-react';
+import { Wrench, Save, Sun, Moon, Laptop, UserCheck, Loader2, MapPin, Navigation } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import { cn } from '@/lib/utils';
 import { getCurrentUserProfile, updateUserProfile, type UserProfileData } from '@/app/actions/profile';
+import { updateProviderBusinessDetails } from '@/app/actions/services';
 
 export default function ProviderSettingsPage() {
   const { showToast } = useToast();
@@ -13,6 +14,7 @@ export default function ProviderSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingBusiness, setSavingBusiness] = useState(false);
+  const [locatingDevice, setLocatingDevice] = useState(false);
 
   // Authenticated Provider Profile State
   const [providerProfile, setProviderProfile] = useState<UserProfileData | null>(null);
@@ -25,6 +27,9 @@ export default function ProviderSettingsPage() {
   const [visitingFee, setVisitingFee] = useState('299');
   const [availableNow, setAvailableNow] = useState(true);
   const [upiId, setUpiId] = useState('');
+  const [address, setAddress] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
 
   useEffect(() => {
     async function loadData() {
@@ -43,6 +48,15 @@ export default function ProviderSettingsPage() {
           }
           if (user.providerAvailable !== undefined && user.providerAvailable !== null) {
             setAvailableNow(user.providerAvailable);
+          }
+          if (user.providerAddress) {
+            setAddress(user.providerAddress);
+          }
+          if (user.providerLatitude != null) {
+            setLatitude(String(user.providerLatitude));
+          }
+          if (user.providerLongitude != null) {
+            setLongitude(String(user.providerLongitude));
           }
         }
       } catch (err) {
@@ -90,13 +104,70 @@ export default function ProviderSettingsPage() {
     }
   }
 
-  function handleSaveBusiness(e: React.FormEvent) {
+  function handleUseCurrentDeviceLocation() {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      showToast('Geolocation is not supported by your browser.', 'error');
+      return;
+    }
+    setLocatingDevice(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLatitude(pos.coords.latitude.toFixed(6));
+        setLongitude(pos.coords.longitude.toFixed(6));
+        setLocatingDevice(false);
+        showToast('Current coordinates populated. Click "Save Business Settings" to confirm.', 'info');
+      },
+      (err) => {
+        setLocatingDevice(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          showToast('Location permission was denied by your browser.', 'error');
+        } else {
+          showToast('Unable to acquire current device location.', 'error');
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  }
+
+  async function handleSaveBusiness(e: React.FormEvent) {
     e.preventDefault();
     setSavingBusiness(true);
-    setTimeout(() => {
+
+    const parsedLat = latitude.trim() ? parseFloat(latitude.trim()) : null;
+    const parsedLng = longitude.trim() ? parseFloat(longitude.trim()) : null;
+
+    if (latitude.trim() && (parsedLat === null || isNaN(parsedLat) || parsedLat < -90 || parsedLat > 90)) {
+      showToast('Please enter a valid decimal latitude between -90 and 90.', 'error');
       setSavingBusiness(false);
-      showToast('Service partner business profile updated.', 'success');
-    }, 500);
+      return;
+    }
+    if (longitude.trim() && (parsedLng === null || isNaN(parsedLng) || parsedLng < -180 || parsedLng > 180)) {
+      showToast('Please enter a valid decimal longitude between -180 and 180.', 'error');
+      setSavingBusiness(false);
+      return;
+    }
+
+    try {
+      const res = await updateProviderBusinessDetails({
+        businessName,
+        category,
+        startingPrice: Number(visitingFee) || 299,
+        available: availableNow,
+        address: address.trim() || null,
+        latitude: parsedLat,
+        longitude: parsedLng,
+      });
+
+      if (res.error) {
+        showToast(res.error, 'error');
+      } else {
+        showToast('Business details and service location saved successfully.', 'success');
+      }
+    } catch {
+      showToast('An unexpected error occurred while saving business details.', 'error');
+    } finally {
+      setSavingBusiness(false);
+    }
   }
 
   const emailDisplay = providerProfile?.email || 'Not provided';
@@ -292,6 +363,77 @@ export default function ProviderSettingsPage() {
                   onChange={(e) => setUpiId(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-lg border border-neutral-200 dark:border-[#2a3547] bg-white dark:bg-[#1a2232] text-sm text-neutral-800 dark:text-neutral-100 focus:ring-2 focus:ring-primary-600/30 focus:border-primary-600 outline-none"
                 />
+              </div>
+
+              {/* Service Base Location */}
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                  Service Area / Operating Address
+                </label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 dark:text-neutral-500" />
+                  <input
+                    type="text"
+                    placeholder="e.g. Gomti Nagar, Lucknow"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="w-full pl-9 pr-3.5 py-2.5 rounded-lg border border-neutral-200 dark:border-[#2a3547] bg-white dark:bg-[#1a2232] text-sm text-neutral-800 dark:text-neutral-100 focus:ring-2 focus:ring-primary-600/30 focus:border-primary-600 outline-none"
+                  />
+                </div>
+                <p className="text-[11px] text-neutral-400 dark:text-neutral-500 mt-1">
+                  Displayed on your public provider card so residents know your service base.
+                </p>
+              </div>
+
+              {/* Coordinates */}
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                  Latitude (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. 26.850000"
+                  value={latitude}
+                  onChange={(e) => setLatitude(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-neutral-200 dark:border-[#2a3547] bg-white dark:bg-[#1a2232] text-sm text-neutral-800 dark:text-neutral-100 focus:ring-2 focus:ring-primary-600/30 focus:border-primary-600 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                  Longitude (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. 80.950000"
+                  value={longitude}
+                  onChange={(e) => setLongitude(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-neutral-200 dark:border-[#2a3547] bg-white dark:bg-[#1a2232] text-sm text-neutral-800 dark:text-neutral-100 focus:ring-2 focus:ring-primary-600/30 focus:border-primary-600 outline-none"
+                />
+              </div>
+
+              <div className="sm:col-span-2 flex items-center justify-between flex-wrap gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={handleUseCurrentDeviceLocation}
+                  disabled={locatingDevice}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-[#2a3547] bg-neutral-50 dark:bg-[#1a2232] hover:bg-neutral-100 dark:hover:bg-[#20293a] text-xs font-medium text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer disabled:opacity-60"
+                >
+                  {locatingDevice ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-primary-600" />
+                      <span>Detecting Coordinates…</span>
+                    </>
+                  ) : (
+                    <>
+                      <Navigation className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
+                      <span>Use Current Device Location</span>
+                    </>
+                  )}
+                </button>
+                <p className="text-[11px] text-neutral-400 dark:text-neutral-500">
+                  Coordinates enable direct navigation and distance estimates on resident devices.
+                </p>
               </div>
             </div>
 

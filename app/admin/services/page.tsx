@@ -4,9 +4,10 @@ import { useState, useEffect, useTransition } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { useToast } from '@/components/ui/Toast';
-import { Star, Search, Shield, ToggleLeft, ToggleRight, Loader2 } from 'lucide-react';
+import { Star, Search, Shield, ToggleLeft, ToggleRight, Loader2, MapPin, ExternalLink } from 'lucide-react';
 import { getAdminServiceProviders, toggleProviderAvailability } from '@/app/actions/services';
 import { ServiceProvider } from '@/lib/types';
+import { getGoogleMapsLocationUrl } from '@/lib/maps';
 
 export default function AdminServicesPage() {
   const [providers, setProviders] = useState<ServiceProvider[]>([]);
@@ -148,7 +149,32 @@ export default function AdminServicesPage() {
                     </Badge>
                   </div>
 
-                  <p className="text-xs text-neutral-600 dark:text-neutral-300 leading-relaxed mb-3 line-clamp-2">{p.bio}</p>
+                  <p className="text-xs text-neutral-600 dark:text-neutral-300 leading-relaxed mb-2 line-clamp-2">{p.bio}</p>
+
+                  {/* Location info */}
+                  <div className="text-xs mb-3 flex items-center justify-between">
+                    {p.address?.trim() || (p.latitude != null && p.longitude != null) ? (
+                      <div className="flex items-center gap-1.5 text-neutral-700 dark:text-neutral-300 min-w-0">
+                        <MapPin className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400 shrink-0" />
+                        <span className="truncate">{p.address?.trim() || `${p.latitude}, ${p.longitude}`}</span>
+                        {getGoogleMapsLocationUrl({ address: p.address, latitude: p.latitude, longitude: p.longitude }) && (
+                          <a
+                            href={getGoogleMapsLocationUrl({ address: p.address, latitude: p.latitude, longitude: p.longitude })!}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-0.5 text-primary-600 dark:text-primary-400 hover:underline shrink-0 ml-1 font-medium"
+                          >
+                            Map <ExternalLink className="w-2.5 h-2.5" />
+                          </a>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1.5 text-neutral-400 dark:text-neutral-500">
+                        <MapPin className="w-3.5 h-3.5 shrink-0" />
+                        <span>Location not available</span>
+                      </div>
+                    )}
+                  </div>
 
                   <div className="flex items-center justify-between border-t border-neutral-100 dark:border-[#222b3d] pt-3">
                     <div className="flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">

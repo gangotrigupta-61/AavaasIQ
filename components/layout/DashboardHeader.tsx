@@ -7,18 +7,22 @@ import {
   User,
   Settings,
   LogOut,
+  Home,
+  Sparkles,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { getInitials } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
+import { AavaasIQAssistant, type AssistantRole } from '@/components/dashboard/AavaasIQAssistant';
 
 interface DashboardHeaderProps {
   title: string;
   onMenuToggle: () => void;
   userName: string;
   userSubtitle?: string;
+  homeHref?: string;
 }
 
 export default function DashboardHeader({
@@ -26,9 +30,20 @@ export default function DashboardHeader({
   onMenuToggle,
   userName,
   userSubtitle,
+  homeHref,
 }: DashboardHeaderProps) {
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [assistantOpen, setAssistantOpen] = useState(false);
+
+  // Compute portal role for assistant guidance
+  const currentRole: AssistantRole = pathname.startsWith('/admin')
+    ? 'admin'
+    : pathname.startsWith('/security')
+      ? 'security'
+      : pathname.startsWith('/provider')
+        ? 'provider'
+        : 'resident';
 
   // Determine profile and settings URLs dynamically based on active route
   const isResident =
@@ -53,8 +68,8 @@ export default function DashboardHeader({
 
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 sm:px-6 bg-white dark:bg-[#0f141c] border-b border-neutral-200 dark:border-neutral-800 shrink-0 transition-colors">
-      {/* Left: hamburger + title */}
-      <div className="flex items-center gap-3">
+      {/* Left: hamburger + home button + title */}
+      <div className="flex items-center gap-2">
         <button
           onClick={onMenuToggle}
           className="lg:hidden p-2 rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
@@ -62,11 +77,41 @@ export default function DashboardHeader({
         >
           <Menu className="w-5 h-5" />
         </button>
+        {homeHref && (
+          <Link
+            href={homeHref}
+            className="min-h-[38px] min-w-[38px] flex items-center justify-center p-2 rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600 dark:hover:text-primary-400 active:scale-95 transition-colors transition-transform duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+            aria-label="Go to Dashboard"
+            title="Dashboard Home"
+          >
+            <Home className="w-4 h-4" />
+          </Link>
+        )}
         <h1 className="text-base font-semibold text-neutral-900 dark:text-neutral-100 truncate">{title}</h1>
       </div>
 
-      {/* Right: theme toggle + user profile */}
+      {/* Right: assistant trigger + theme toggle + user profile */}
       <div className="flex items-center gap-2 sm:gap-3">
+        {/* Ask AavaasIQ Guided Product Assistant Trigger */}
+        <button
+          type="button"
+          onClick={() => setAssistantOpen(true)}
+          className="hidden sm:inline-flex items-center gap-1.5 min-h-[36px] px-3 py-1.5 rounded-lg border border-primary-200 dark:border-primary-800/60 bg-primary-50 dark:bg-primary-950/40 text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/50 active:scale-[0.98] text-xs font-semibold transition-colors transition-transform duration-150 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+          title="Open AavaasIQ Guided Product Assistant"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
+          <span>Ask AavaasIQ</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setAssistantOpen(true)}
+          className="sm:hidden min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-lg text-primary-600 dark:text-primary-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 active:scale-95 transition-colors transition-transform duration-150 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+          title="Ask AavaasIQ"
+          aria-label="Ask AavaasIQ"
+        >
+          <Sparkles className="w-4 h-4" />
+        </button>
+
         {/* Global Theme Toggle */}
         <ThemeToggle />
 
@@ -141,6 +186,13 @@ export default function DashboardHeader({
           )}
         </div>
       </div>
+
+      {/* AavaasIQ Guided Assistant Modal */}
+      <AavaasIQAssistant
+        isOpen={assistantOpen}
+        onClose={() => setAssistantOpen(false)}
+        role={currentRole}
+      />
     </header>
   );
 }

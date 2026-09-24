@@ -75,6 +75,7 @@ export interface ServiceProvider {
   name: string;
   category: string;
   phone?: string | null;
+  avatarUrl?: string | null;
   rating: number;
   reviewCount: number;
   experience: string;
@@ -82,6 +83,9 @@ export interface ServiceProvider {
   verified: boolean;
   available: boolean;
   bio: string;
+  address?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export interface Notice {

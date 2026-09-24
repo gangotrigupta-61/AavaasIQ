@@ -34,7 +34,7 @@ export default function HeroSection() {
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           backgroundPosition: "top center",
-          opacity: 0.36
+          opacity: 0.38
         }}
       />
 
@@ -43,7 +43,7 @@ export default function HeroSection() {
         <div className="flex flex-col gap-6 max-w-xl lg:max-w-2xl">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 self-start bg-green-50 dark:bg-green-950/60 border border-green-200 dark:border-green-800/60 text-green-700 dark:text-green-300 text-xs font-semibold px-3 py-1.5 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+
             Introducing AavaasIQ
           </div>
 

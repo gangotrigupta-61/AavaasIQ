@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { StatCard } from '@/components/dashboard/StatCard';
-import { AIInsightCard } from '@/components/dashboard/AIInsightCard';
+import { AssistantInsightCard } from '@/components/dashboard/AssistantInsightCard';
 import ComplaintOverview from '@/components/admin/ComplaintOverview';
 import SocietyActivityFeed from '@/components/admin/SocietyActivityFeed';
 import { Card } from '@/components/ui/Card';
@@ -82,7 +82,8 @@ export default async function AdminDashboardPage() {
 
         {/* Right */}
         <div className="space-y-6">
-          <AIInsightCard
+          <AssistantInsightCard
+            role="admin"
             title="AavaasIQ Insights"
             insights={[
               openComplaints > 0
@@ -93,7 +94,7 @@ export default async function AdminDashboardPage() {
                 ? `${todayVisitors} visitor entry log${todayVisitors > 1 ? 's' : ''} verified at gate today.`
                 : 'Gate traffic is normal with 0 active alerts.',
             ]}
-            actionLabel="View Full Analytics"
+            actionLabel="Ask AavaasIQ"
           />
 
           {/* Quick actions */}

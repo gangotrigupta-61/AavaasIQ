@@ -66,6 +66,7 @@ export default function AdminLayoutClient({ user, children }: AdminLayoutClientP
           onMenuToggle={() => setMobileOpen(true)}
           userName={userName}
           userSubtitle={userSubtitle}
+          homeHref="/admin/dashboard"
         />
         <main className="flex-1 p-4 sm:p-6">{children}</main>
       </div>

@@ -178,6 +178,7 @@ export interface DbServiceProvider {
   name: string;
   category: string;
   phone: string | null;
+  avatar_url?: string | null;
   rating: number;
   review_count: number;
   experience: string | null;
@@ -185,6 +186,9 @@ export interface DbServiceProvider {
   verified: boolean;
   available: boolean;
   bio: string | null;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
   created_at: string;
   updated_at: string;
 }

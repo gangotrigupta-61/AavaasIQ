@@ -58,6 +58,7 @@ export default function SecurityLayoutClient({ user, children }: SecurityLayoutC
           onMenuToggle={() => setMobileOpen(true)}
           userName={userName}
           userSubtitle={userSubtitle}
+          homeHref="/security/dashboard"
         />
         <main className="flex-1 p-4 sm:p-6">{children}</main>
       </div>

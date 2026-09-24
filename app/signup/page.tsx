@@ -172,11 +172,17 @@ export default function SignupPage() {
       if (!form.fullName || !form.mobile || !form.email || !form.password || !form.confirmPassword) {
         setError('Please fill in all fields.'); return;
       }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+        setError('Please enter a valid email address.'); return;
+      }
+      if (!/^\d{10}$/.test(form.mobile)) {
+        setError('Mobile number must be exactly 10 digits (numbers only).'); return;
+      }
       if (form.password !== form.confirmPassword) {
         setError('Passwords do not match.'); return;
       }
-      if (form.password.length < 6) {
-        setError('Password must be at least 6 characters.'); return;
+      if (form.password.length < 8) {
+        setError('Password must be at least 8 characters.'); return;
       }
     }
     if (step === 3) {
@@ -296,7 +302,12 @@ export default function SignupPage() {
                   type="tel"
                   placeholder="9876543210"
                   value={form.mobile}
-                  onChange={(e) => update('mobile', e.target.value)}
+                  maxLength={10}
+                  onChange={(e) => {
+                    // Strip non-digits, truncate to 10
+                    const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    update('mobile', digits);
+                  }}
                   className="flex-1 px-3.5 py-2.5 rounded-r-lg border border-neutral-200 dark:border-[#2a3547] bg-white dark:bg-[#1a2232] text-sm text-neutral-800 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-600/30 focus:border-primary-600 transition"
                 />
               </div>
@@ -391,9 +402,17 @@ export default function SignupPage() {
                 Back
               </button>
             ) : (
-              <Link href="/login" className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200">
-                Already have an account? Sign in
-              </Link>
+              <div className="flex flex-col gap-1">
+                <Link href="/" className="text-xs text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors">
+                  ← Back to Home
+                </Link>
+                <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                  Have an account?{' '}
+                  <Link href="/login" className="text-primary-600 dark:text-primary-400 font-semibold hover:underline focus:underline">
+                    Sign in
+                  </Link>
+                </span>
+              </div>
             )}
             <button
               type="button"

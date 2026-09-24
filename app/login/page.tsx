@@ -122,12 +122,28 @@ export default function LoginPage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
-    if (!identifier.trim() || !password.trim()) {
+    const id = identifier.trim();
+    if (!id || !password.trim()) {
       setError('Please enter both email/mobile and password.');
       return;
     }
+    // Email format check (if it contains @)
+    if (id.includes('@') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(id)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    // Mobile format check (if numeric, must be exactly 10 digits)
+    if (/^\d+$/.test(id) && id.length !== 10) {
+      setError('Mobile number must be exactly 10 digits.');
+      return;
+    }
+    // Password minimum length
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
     const formData = new FormData();
-    formData.set('email', identifier.trim());
+    formData.set('email', id);
     formData.set('password', password);
 
     startTransition(async () => {
@@ -206,17 +222,21 @@ export default function LoginPage() {
         <div className="w-full max-w-xl space-y-6 my-auto">
           {/* Header row with logo / back link / ThemeToggle */}
           <div className="flex items-center justify-between pb-2">
-            <div className="flex items-center gap-2 lg:hidden">
-              <Link href="/" className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center">
-                  <Building2 className="text-white" size={16} />
-                </div>
-                <span className="text-neutral-900 dark:text-neutral-100 text-lg font-bold">AavaasIQ</span>
+            <div className="flex items-center gap-3">
+              {/* Mobile-only logo */}
+              <div className="flex items-center gap-2 lg:hidden">
+                <Link href="/" className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center">
+                    <Building2 className="text-white" size={16} />
+                  </div>
+                  <span className="text-neutral-900 dark:text-neutral-100 text-lg font-bold">AavaasIQ</span>
+                </Link>
+              </div>
+              {/* Back to Home — always top-left */}
+              <Link href="/" className="text-xs font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200">
+                ← Back to Home
               </Link>
             </div>
-            <Link href="/" className="text-xs font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200">
-              ← Back to Home
-            </Link>
             <ThemeToggle />
           </div>
 
@@ -427,7 +447,7 @@ export default function LoginPage() {
           <div className="text-center text-xs text-neutral-500 dark:text-neutral-400 pt-1">
             Don&apos;t have an account?{' '}
             <Link href="/signup" className="text-primary-600 dark:text-primary-400 font-semibold hover:underline">
-              Create a new society account →
+              Create a new society account
             </Link>
           </div>
         </div>

@@ -17,8 +17,8 @@ export default function AboutSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-2xl border border-neutral-200 dark:border-[#222b3d] bg-neutral-50/50 dark:bg-[#131924] hover:bg-neutral-50 dark:hover:bg-[#182130] transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/60 text-primary-600 dark:text-primary-400 flex items-center justify-center mb-4">
+          <div className="group p-6 rounded-2xl border border-neutral-200 dark:border-[#222b3d] bg-neutral-50/50 dark:bg-[#131924] hover:bg-white dark:hover:bg-[#182130] hover:border-primary-300 dark:hover:border-primary-800/80 hover:-translate-y-1 hover:shadow-md transition-transform transition-shadow transition-colors duration-200">
+            <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/60 text-primary-600 dark:text-primary-400 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-200">
               <Shield className="w-5 h-5" />
             </div>
             <h3 className="font-semibold text-neutral-900 dark:text-neutral-100 text-base mb-1.5">Gate &amp; Visitor Security</h3>
@@ -27,8 +27,8 @@ export default function AboutSection() {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl border border-neutral-200 dark:border-[#222b3d] bg-neutral-50/50 dark:bg-[#131924] hover:bg-neutral-50 dark:hover:bg-[#182130] transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/60 text-primary-600 dark:text-primary-400 flex items-center justify-center mb-4">
+          <div className="group p-6 rounded-2xl border border-neutral-200 dark:border-[#222b3d] bg-neutral-50/50 dark:bg-[#131924] hover:bg-white dark:hover:bg-[#182130] hover:border-primary-300 dark:hover:border-primary-800/80 hover:-translate-y-1 hover:shadow-md transition-transform transition-shadow transition-colors duration-200">
+            <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/60 text-primary-600 dark:text-primary-400 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-200">
               <Users className="w-5 h-5" />
             </div>
             <h3 className="font-semibold text-neutral-900 dark:text-neutral-100 text-base mb-1.5">Community &amp; Notices</h3>
@@ -37,8 +37,8 @@ export default function AboutSection() {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl border border-neutral-200 dark:border-[#222b3d] bg-neutral-50/50 dark:bg-[#131924] hover:bg-neutral-50 dark:hover:bg-[#182130] transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/60 text-primary-600 dark:text-primary-400 flex items-center justify-center mb-4">
+          <div className="group p-6 rounded-2xl border border-neutral-200 dark:border-[#222b3d] bg-neutral-50/50 dark:bg-[#131924] hover:bg-white dark:hover:bg-[#182130] hover:border-primary-300 dark:hover:border-primary-800/80 hover:-translate-y-1 hover:shadow-md transition-transform transition-shadow transition-colors duration-200">
+            <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/60 text-primary-600 dark:text-primary-400 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-200">
               <Wrench className="w-5 h-5" />
             </div>
             <h3 className="font-semibold text-neutral-900 dark:text-neutral-100 text-base mb-1.5">Maintenance &amp; Requests</h3>

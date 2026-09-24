@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Building2, Save, Sun, Moon, Laptop, UserCheck, Loader2 } from 'lucide-react';
+import { Building2, Save, Sun, Moon, Laptop, UserCheck, Loader2, FileText, Volume2 } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import { cn } from '@/lib/utils';
 import { getCurrentUserProfile, updateUserProfile, type UserProfileData } from '@/app/actions/profile';
+import { getSocietyDescription, updateSocietyDescription } from '@/app/actions/society';
 
 export default function AdminSettingsPage() {
   const { showToast } = useToast();
@@ -13,6 +14,7 @@ export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingSociety, setSavingSociety] = useState(false);
+  const [savingDescription, setSavingDescription] = useState(false);
 
   // Authenticated Admin Profile State
   const [adminProfile, setAdminProfile] = useState<UserProfileData | null>(null);
@@ -27,10 +29,16 @@ export default function AdminSettingsPage() {
   const [maintenanceRate, setMaintenanceRate] = useState('2400');
   const [lateFeePercent, setLateFeePercent] = useState('2');
 
+  // Society Information
+  const [societyDescription, setSocietyDescription] = useState('');
+
   useEffect(() => {
     async function loadData() {
       try {
-        const user = await getCurrentUserProfile();
+        const [user, descResult] = await Promise.all([
+          getCurrentUserProfile(),
+          getSocietyDescription(),
+        ]);
         if (user) {
           setAdminProfile(user);
           setAdminName(user.fullName || '');
@@ -38,6 +46,9 @@ export default function AdminSettingsPage() {
           setSocietyName(user.societyName || 'Society Administration');
           setContactEmail(user.email || '');
           setPhone(user.phone || '');
+        }
+        if (descResult?.description) {
+          setSocietyDescription(descResult.description);
         }
       } catch (err) {
         console.error('Failed to load admin profile:', err);
@@ -47,6 +58,27 @@ export default function AdminSettingsPage() {
     }
     loadData();
   }, []);
+
+  async function handleSaveDescription(e: React.FormEvent) {
+    e.preventDefault();
+    if (societyDescription.length > 2000) {
+      showToast('Description must be 2000 characters or fewer.', 'error');
+      return;
+    }
+    setSavingDescription(true);
+    try {
+      const res = await updateSocietyDescription(societyDescription);
+      if (res.success) {
+        showToast('Society description saved successfully.', 'success');
+      } else {
+        showToast(res.error ?? 'Failed to save description.', 'error');
+      }
+    } catch {
+      showToast('An unexpected error occurred.', 'error');
+    } finally {
+      setSavingDescription(false);
+    }
+  }
 
   async function handleSaveAdminProfile(e: React.FormEvent) {
     e.preventDefault();
@@ -407,6 +439,72 @@ export default function AdminSettingsPage() {
                 </div>
               </button>
             </div>
+          </div>
+
+          {/* Card 4: Society Information */}
+          <div className="bg-white dark:bg-[#131924] rounded-2xl p-6 sm:p-8 border border-neutral-200 dark:border-[#222b3d] shadow-sm space-y-6 transition-colors">
+            <div className="flex items-center gap-3 pb-4 border-b border-neutral-100 dark:border-neutral-800">
+              <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/60 text-primary-600 dark:text-primary-400 flex items-center justify-center">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-neutral-900 dark:text-neutral-100">Society Information</h3>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                  A short description of your society displayed to residents and on your profile.
+                </p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSaveDescription} className="space-y-4">
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">Society Description</label>
+                  <span className={`text-xs ${societyDescription.length > 1900 ? 'text-red-500' : 'text-neutral-400 dark:text-neutral-500'}`}>
+                    {societyDescription.length} / 2000
+                  </span>
+                </div>
+                <textarea
+                  rows={5}
+                  maxLength={2000}
+                  placeholder="Tell residents about your society — facilities, rules, history, or anything else they should know…"
+                  value={societyDescription}
+                  onChange={(e) => setSocietyDescription(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-neutral-200 dark:border-[#2a3547] bg-white dark:bg-[#1a2232] text-sm text-neutral-800 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-600/30 focus:border-primary-600 transition resize-none"
+                />
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="submit"
+                  disabled={savingDescription}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  {savingDescription ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</>
+                  ) : (
+                    <><Save className="w-4 h-4" /> Save Description</>
+                  )}
+                </button>
+
+                {societyDescription.trim() && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(societyDescription);
+                        utterance.lang = 'en-IN';
+                        window.speechSynthesis.cancel();
+                        window.speechSynthesis.speak(utterance);
+                      }
+                    }}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-neutral-200 dark:border-[#2a3547] text-neutral-600 dark:text-neutral-300 text-sm font-medium hover:bg-neutral-50 dark:hover:bg-neutral-800 transition cursor-pointer"
+                  >
+                    <Volume2 className="w-4 h-4" />
+                    Read Aloud
+                  </button>
+                )}
+              </div>
+            </form>
           </div>
         </>
       )}

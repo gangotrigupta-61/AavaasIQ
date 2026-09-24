@@ -62,6 +62,7 @@ export default function ProviderLayoutClient({ user, children }: ProviderLayoutC
           onMenuToggle={() => setMobileOpen(true)}
           userName={userName}
           userSubtitle={userSubtitle}
+          homeHref="/provider/dashboard"
         />
         <main className="flex-1 p-4 sm:p-6">{children}</main>
       </div>

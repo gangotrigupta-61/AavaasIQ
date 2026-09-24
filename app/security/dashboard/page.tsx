@@ -1,4 +1,5 @@
 import { StatCard } from '@/components/dashboard/StatCard';
+import { AssistantInsightCard } from '@/components/dashboard/AssistantInsightCard';
 import VisitorEntryTable from '@/components/security/VisitorEntryTable';
 import { Card } from '@/components/ui/Card';
 import { getSecurityVisitors } from '@/app/actions/visitors';
@@ -85,6 +86,21 @@ export default async function SecurityDashboardPage() {
           <span className="text-sm font-semibold">Emergency Alert</span>
         </Link>
       </div>
+
+      <AssistantInsightCard
+        role="security"
+        title="Security Assistant"
+        insights={[
+          expected.length > 0
+            ? `${expected.length} visitor${expected.length > 1 ? 's are' : ' is'} expected and awaiting arrival at the gate.`
+            : 'No pre-registered visitors expected right now.',
+          inside.length > 0
+            ? `${inside.length} visitor${inside.length > 1 ? 's are' : ' is'} currently on premises.`
+            : 'No visitors currently inside the premises.',
+          'Use Emergency Contacts for immediate escalation to police, fire, or ambulance.',
+        ]}
+        actionLabel="Ask AavaasIQ"
+      />
 
       {/* Visitor Table */}
       <Card padding="md">

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { ActivityFeed } from '@/components/dashboard/ActivityFeed';
-import { AIInsightCard } from '@/components/dashboard/AIInsightCard';
+import { AssistantInsightCard } from '@/components/dashboard/AssistantInsightCard';
 import ComplaintsList from '@/components/resident/ComplaintsList';
 import { Card } from '@/components/ui/Card';
 import { Complaint, ActivityItem } from '@/lib/types';
@@ -303,12 +303,17 @@ export default async function ResidentDashboardPage() {
 
         {/* Right column */}
         <div className="space-y-6">
-          <AIInsightCard
+          <AssistantInsightCard
+            role="resident"
             title="AavaasIQ Assistant"
             insights={[
-              'You have a maintenance payment of ₹2,400 due in 5 days.',
-              'Your plumbing complaint is currently being handled.',
-              'Diwali community event is tomorrow — don\'t miss it!',
+              (residentData?.activeComplaintsCount ?? 0) > 0
+                ? `You have ${residentData!.activeComplaintsCount} open complaint${(residentData?.activeComplaintsCount ?? 0) > 1 ? 's' : ''} in progress.`
+                : 'All your complaints are resolved. Raise a new one if needed.',
+              residentData?.pendingMaintenance
+                ? `Your maintenance bill of ₹${residentData.pendingMaintenance.amount.toLocaleString('en-IN')} is due on ${residentData.pendingMaintenance.dueDate}.`
+                : 'No pending maintenance dues. You are all clear for this cycle.',
+              'Need a plumber, electrician, or cleaner? Book verified service pros from Home Services.',
             ]}
             actionLabel="Ask AavaasIQ"
           />

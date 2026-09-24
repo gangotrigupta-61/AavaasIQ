@@ -6,16 +6,30 @@ import FeaturesSection from '@/components/landing/FeaturesSection';
 import HomeServicesSection from '@/components/landing/HomeServicesSection';
 import AboutSection from '@/components/landing/AboutSection';
 import ContactSection from '@/components/landing/ContactSection';
+import { getCurrentUserProfile } from '@/app/actions/profile';
 
-export default function HomePage() {
+const roleDashboardMap: Record<string, string> = {
+  resident: '/resident/dashboard',
+  admin: '/admin/dashboard',
+  security: '/security/dashboard',
+  provider: '/provider/dashboard',
+};
+
+export default async function HomePage() {
+  const profile = await getCurrentUserProfile();
+  const isResident = profile?.role === 'resident';
+  const dashboardHref = profile
+    ? roleDashboardMap[profile.role] || '/resident/dashboard'
+    : null;
+
   return (
     <>
       <Navbar />
       <main className="pt-16">
-        <HeroSection />
+        <HeroSection dashboardHref={dashboardHref} />
         <TrustedEcosystem />
         <FeaturesSection />
-        <HomeServicesSection />
+        <HomeServicesSection isResident={isResident} />
         <AboutSection />
         <ContactSection />
       </main>

@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { ServiceProvider } from '@/lib/types';
 import { createServiceBooking } from '@/app/actions/services';
 import { useToast } from '@/components/ui/Toast';
-import { X } from 'lucide-react';
+import { X, MapPin } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 
 interface ServiceBookingModalProps {
@@ -76,9 +76,16 @@ export default function ServiceBookingModal({
         <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-800/40">
           <div>
             <h3 className="text-base font-bold text-neutral-900 dark:text-neutral-100">Book Home Service</h3>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
-              {provider.name} · {provider.category}
-            </p>
+            <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400 mt-0.5 truncate max-w-sm">
+              <span>{provider.name} · {provider.category}</span>
+              {provider.address?.trim() && (
+                <span className="inline-flex items-center gap-1">
+                  <span>·</span>
+                  <MapPin className="w-3 h-3 text-neutral-400 shrink-0" />
+                  <span className="truncate">{provider.address.trim()}</span>
+                </span>
+              )}
+            </div>
           </div>
           <button
             onClick={onClose}

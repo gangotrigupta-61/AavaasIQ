@@ -28,6 +28,9 @@ export interface UserProfileData {
   providerStartingPrice?: number | null;
   providerAvailable?: boolean | null;
   providerBio?: string | null;
+  providerAddress?: string | null;
+  providerLatitude?: number | null;
+  providerLongitude?: number | null;
 }
 
 export interface ProfileUpdateResult {
@@ -117,11 +120,14 @@ export async function getCurrentUserProfile(): Promise<UserProfileData | null> {
     let providerStartingPrice: number | null = null;
     let providerAvailable: boolean | null = null;
     let providerBio: string | null = null;
+    let providerAddress: string | null = null;
+    let providerLatitude: number | null = null;
+    let providerLongitude: number | null = null;
 
     if (role === 'provider') {
       const { data: pro } = await supabase
         .from('service_providers')
-        .select('id, name, category, rating, experience, starting_price, available, bio')
+        .select('id, name, category, rating, experience, starting_price, available, bio, address, latitude, longitude')
         .eq('user_id', user.id)
         .maybeSingle();
 
@@ -133,6 +139,9 @@ export async function getCurrentUserProfile(): Promise<UserProfileData | null> {
         providerStartingPrice = pro.starting_price;
         providerAvailable = pro.available;
         providerBio = pro.bio;
+        providerAddress = pro.address ?? null;
+        providerLatitude = pro.latitude != null ? Number(pro.latitude) : null;
+        providerLongitude = pro.longitude != null ? Number(pro.longitude) : null;
       }
     }
 
@@ -176,6 +185,9 @@ export async function getCurrentUserProfile(): Promise<UserProfileData | null> {
       providerStartingPrice,
       providerAvailable,
       providerBio,
+      providerAddress,
+      providerLatitude,
+      providerLongitude,
     };
   } catch (err: unknown) {
     if (

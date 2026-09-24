@@ -183,6 +183,7 @@ function mapDbServiceProvider(row: DbServiceProvider): ServiceProvider {
     name: row.name,
     category: row.category,
     phone: row.phone,
+    avatarUrl: row.avatar_url ?? null,
     rating: Number(row.rating),
     reviewCount: row.review_count,
     experience: row.experience ?? '',
@@ -190,6 +191,9 @@ function mapDbServiceProvider(row: DbServiceProvider): ServiceProvider {
     verified: row.verified,
     available: row.available,
     bio: row.bio ?? '',
+    address: row.address ?? null,
+    latitude: row.latitude != null ? Number(row.latitude) : null,
+    longitude: row.longitude != null ? Number(row.longitude) : null,
   };
 }
 
@@ -683,3 +687,69 @@ export async function toggleProviderAvailability(
   revalidatePath('/resident/services');
   return { success: true };
 }
+
+// ─── 11. Update Provider Business & Location Details (Provider) ───────────────
+
+export interface UpdateProviderBusinessInput {
+  businessName?: string;
+  category?: string;
+  startingPrice?: number;
+  available?: boolean;
+  address?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+}
+
+export async function updateProviderBusinessDetails(
+  input: UpdateProviderBusinessInput
+): Promise<ServiceActionResult> {
+  const ctx = await getAuthProviderContext();
+  if (!ctx.ok) return { error: ctx.error };
+
+  if (!ctx.provider) {
+    return { error: 'No service provider record linked to this account.' };
+  }
+
+  const updates: Record<string, unknown> = {};
+
+  if (input.businessName !== undefined) {
+    updates.name = input.businessName.trim();
+  }
+  if (input.category !== undefined) {
+    updates.category = input.category.trim();
+  }
+  if (input.startingPrice !== undefined && !isNaN(input.startingPrice)) {
+    updates.starting_price = Math.max(0, input.startingPrice);
+  }
+  if (input.available !== undefined) {
+    updates.available = Boolean(input.available);
+  }
+  if (input.address !== undefined) {
+    updates.address = input.address ? input.address.trim() : null;
+  }
+  if (input.latitude !== undefined) {
+    updates.latitude =
+      input.latitude != null && !isNaN(input.latitude) ? input.latitude : null;
+  }
+  if (input.longitude !== undefined) {
+    updates.longitude =
+      input.longitude != null && !isNaN(input.longitude) ? input.longitude : null;
+  }
+
+  const { error } = await ctx.supabase
+    .from('service_providers')
+    .update(updates)
+    .eq('id', ctx.provider.id);
+
+  if (error) {
+    console.error('[updateProviderBusinessDetails] error:', error);
+    return { error: error.message };
+  }
+
+  revalidatePath('/provider/settings');
+  revalidatePath('/resident/services');
+  revalidatePath('/admin/services');
+
+  return { success: true };
+}
+

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition } from 'react';
 import { StatCard } from '@/components/dashboard/StatCard';
-import { AIInsightCard } from '@/components/dashboard/AIInsightCard';
+import { AssistantInsightCard } from '@/components/dashboard/AssistantInsightCard';
 import ServiceRequestCard from '@/components/provider/ServiceRequestCard';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -180,7 +180,8 @@ export default function ProviderDashboardPage() {
 
             {/* Right */}
             <div className="space-y-6">
-              <AIInsightCard
+              <AssistantInsightCard
+                role="provider"
                 title="AavaasIQ Assistant"
                 insights={[
                   newRequests.length > 0
@@ -189,6 +190,7 @@ export default function ProviderDashboardPage() {
                   'Maintain high service ratings by completing jobs on scheduled time.',
                   'Contact the society maintenance desk for complex pipeline or drainage queries.',
                 ]}
+                actionLabel="Ask AavaasIQ"
               />
 
               {/* Earnings Summary */}

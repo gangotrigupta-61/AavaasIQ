@@ -42,6 +42,7 @@ export function AIInsightCard({
 
       {/* Action — always shown when actionLabel provided */}
       <button
+        type="button"
         onClick={onAction}
         className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-200 transition-colors cursor-pointer"
       >
