@@ -18,19 +18,16 @@ import { createClient } from '@/lib/supabase/client';
 import { getInitials } from '@/lib/utils';
 
 const navLinks = [
+  { label: 'Home', href: '/' },
   { label: 'Features', href: '/#features' },
   { label: 'Services', href: '/#services' },
-  { label: 'About', href: '/#about' },
   { label: 'Contact', href: '/#contact' },
 ];
 
 const exploreLinks = [
-  { label: 'Features', href: '/features', desc: 'Full platform feature breakdown' },
   { label: 'How It Works', href: '/how-it-works', desc: 'Get started in 4 simple steps' },
   { label: 'Roles', href: '/roles', desc: 'Resident, Admin, Security, Provider' },
-  { label: 'Services', href: '/services', desc: 'Home services marketplace' },
   { label: 'About', href: '/about', desc: 'Our mission and story' },
-  { label: 'Contact', href: '/contact', desc: 'Get in touch or request a demo' },
 ];
 
 const roleDashboardMap: Record<string, string> = {

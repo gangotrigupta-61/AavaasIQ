@@ -1,6 +1,10 @@
 import Link from "next/link";
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  dashboardHref?: string | null;
+}
+
+export default function HeroSection({ dashboardHref }: HeroSectionProps = {}) {
   return (
     <section className="relative min-h-[600px] lg:min-h-[680px] bg-white dark:bg-[#0b0f17] overflow-hidden pt-24 pb-16 transition-colors">
       {/* Background image — right side only, fades out via gradient */}
@@ -30,7 +34,7 @@ export default function HeroSection() {
         className="absolute inset-0 lg:hidden"
         aria-hidden="true"
         style={{
-          backgroundImage: "url('/LandingHero.png')",
+          backgroundImage: "url('/HeroMobile.png')",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           backgroundPosition: "top center",
@@ -64,10 +68,10 @@ export default function HeroSection() {
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-3">
             <Link
-              href="/signup"
+              href={dashboardHref || "/signup"}
               className="inline-flex items-center justify-center bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors text-sm"
             >
-              Get Started Free
+              {dashboardHref ? "Go to Dashboard" : "Get Started Free"}
             </Link>
             <Link
               href="#features"
